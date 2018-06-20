@@ -1,0 +1,367 @@
+openapi: 3.0.0
+info:
+  version: "1.0.0"
+  title: "Swagger Petstore"
+tags:
+- name: "works"
+  description: "all works"
+- name: "userworks"
+  description: "Operations about userswork "
+- name: "user"
+  description: "Operations about user"
+- name: "search"
+  description: "search works"
+- name: "static"
+  description: "get static resources"
+paths:
+  /user:
+    get:
+      tags:
+      - "user"
+      summary: "get user info"
+      parameters:
+        - in: cookie
+          name: username
+          schema:
+            type: string
+          required: true
+          description: session-cookie
+      responses:
+        '200': 
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                    description: the user name
+                  email:
+                    type: string
+                    description: the user's email
+        '400':
+          description: miss cookie
+          content:
+            apllication/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: error massage
+  /user/registe:
+    post:
+      tags:
+      - "user"
+      summary: "Creates an user"
+      description: ""
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user'
+      responses:
+        '200': 
+          description: ok
+        '400':
+          description: some error
+          content:
+            apllication/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: error massage
+  /user/login:
+    post:
+      tags:
+      - "user"
+      summary: "Logs user into the system"
+      description: ""
+      requestBody:
+        $ref: '#/components/requestBodies/userlogin'
+      responses:
+        200:
+          description: "successful operation"
+        400:
+          description: "Invalid username/password supplied"
+  /user/logout:
+    post:
+      tags:
+      - "user"
+      summary: "Logs out current logged in user session"
+      description: ""
+      operationId: "logoutUser"
+      parameters: []
+      responses:
+        '200':
+          description: ok
+        '400':
+          description: some error
+          content:
+            apllication/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: error massage
+  /works:
+    get:
+      tags:
+      - 'works'
+      summary: get all works
+      responses:
+        '200':
+          description: ok
+          content:
+            apllication/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/briefwork'
+        '400':
+          $ref: '#/components/responses/errormassage'
+  /works/{workid}:
+    get:
+      tags:
+      - 'works'
+      summary: get work by workid
+      parameters: 
+        - in: path
+          name: workid
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: ok
+          content:
+            apllication/json:
+              schema:
+                type: object
+                properties:
+                  workInfo:
+                    type: object
+                    properties:
+                      workid:
+                        type: string
+                      workname:
+                        type: string
+                      workbody:
+                        type: string
+                        description: work's introduction
+                      imagepath:
+                        type: string
+                      catagory:
+                        type: string
+                      episode:
+                        type: integer
+                  privateInfo:
+                    type: object
+                    properties:
+                      isFavorite:
+                        type: boolean
+                      rank:
+                        type: string
+                      watched:
+                        type: integer
+        '400':
+          $ref: '#/components/responses/errormassage'
+  /userworks:
+    get:
+      tags:
+        - 'userworks'
+      summary: get works associated with the user
+      parameters: 
+        - in: cookie
+          name: userid
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: ok
+          content:
+            apllication/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/briefwork'
+        '400':
+          $ref: '#/components/responses/errormassage'
+  /userworks/{workid}/changefavorite:
+    put:
+      tags:
+        - 'userworks'
+      summary: update favorite
+      parameters: 
+        - in: path
+          name: workid
+          schema:
+            type: string
+          required: true
+        - in: cookie
+          name: userid
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                isFavorite:
+                  type: boolean
+      responses:
+        '200':
+          description: ok
+        '400':
+          $ref: '#/components/responses/errormassage'
+  /userworks/{workid}/changerank:
+    put:
+      tags:
+        - 'userworks'
+      summary: update rank
+      parameters: 
+        - in: path
+          name: workid
+          schema:
+            type: string
+          required: true
+        - in: cookie
+          name: userid
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rank:
+                  type: string
+      responses:
+        '200':
+          description: ok
+        '400':
+          $ref: '#/components/responses/errormassage'
+  /userworks/{workid}/changewatched:
+    put:
+      tags:
+        - 'userworks'
+      summary: update watched
+      parameters: 
+        - in: path
+          name: workid
+          schema:
+            type: string
+          required: true
+        - in: cookie
+          name: userid
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                watched:
+                  type: integer
+      responses:
+        '200':
+          description: ok
+        '400':
+          $ref: '#/components/responses/errormassage' 
+  /search:
+    get:
+      tags:
+        - 'search'
+      summary: search works
+      parameters: 
+        - in: query
+          name: key
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: ok
+          content:
+            apllication/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/briefwork'
+        '400':
+          $ref: '#/components/responses/errormassage'
+  /static/images/{workid}:
+    get:
+      tags:
+        - 'static'
+      summary: get image
+      parameters:
+        - in: path
+          name: workid
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: ok
+          content:
+            image/*:
+              schema:
+                type: string
+                format: binary
+components:
+  requestBodies:
+    userlogin:
+      description: login info
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+              password:
+                type: string
+  schemas:
+    user:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        email:
+          type: string
+    briefwork:
+      type: object
+      properties:
+        workname:
+          type: string
+        workid:
+          type: string
+        imagepath:
+          type: string
+  responses:
+    errormassage:
+      description: some error
+      content:
+        apllication/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                description: error massage
