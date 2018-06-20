@@ -1,5 +1,6 @@
 import createError from "http-errors";
 import express, { json, urlencoded } from "express";
+import { Request, Response, NextFunction } from 'express';
 import { join } from "path";
 import bodyParser from 'body-parser';
 import cookieParser from "cookie-parser";
@@ -37,11 +38,18 @@ app.use(json());
 app.use(bodyParser.json());
 app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(join(__dirname, 'static  ')));
+app.use(express.static(join(__dirname, 'static')));
 
+app.all('/', (req: Request, res: Response, next: NextFunction) => {
+  // serve static index.html
+  res.sendFile(join(__dirname, '../public/index.html'));
+});
 
 app.all('*', router);
 
+app.all('*', (req: Request, res: Response, next: NextFunction) => {
+  res.redirect(`http://${req.hostname}:${process.env.PORT}`);
+});
 // error handler
 app.all('*', function (req, res) {
   res.status(404).end();
