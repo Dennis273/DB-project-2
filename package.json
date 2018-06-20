@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "debug": "npm run build && DEBUG=test:* npm start",
+    "debug-windows": "npm run build & set DEBUG=express:* & node ./bin/www",
     "build": "tsc"
   },
   "dependencies": {
@@ -16,13 +17,15 @@
     "dotenv": "^6.0.0",
     "express": "~4.16.0",
     "express-session": "^1.15.6",
+    "express-validator": "^5.2.0",
     "http-errors": "~1.6.2",
     "mongodb": "^3.0.10",
     "mongoose": "^5.1.5",
     "morgan": "~1.9.0",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
-    "randomatic": "^3.0.0"
+    "randomatic": "^3.0.0",
+    "validator": "^10.4.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.1",
@@ -36,6 +39,8 @@
     "@types/mongoose": "^5.0.16",
     "@types/morgan": "^1.7.35",
     "@types/passport": "^0.4.5",
-    "@types/passport-local": "^1.0.33"
+    "@types/passport-local": "^1.0.33",
+    "@types/validator": "^9.4.1",
+    "tslint": "^5.10.0"
   }
 }
