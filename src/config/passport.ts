@@ -1,6 +1,6 @@
 import passport from 'passport';
 import passportLocal from 'passport-local';
-import User, { UserModel } from '../model/userModel'
+import User, { IUser } from '../model/userModel'
 import { Request, Response, NextFunction } from 'express';
 
 const LocalStrategy = passportLocal.Strategy;
@@ -17,16 +17,23 @@ passport.deserializeUser((id, done) => {
 
 passport.use(new LocalStrategy(
     (username, password, done) => {
-        User.findOne({ username }, (err, user: UserModel) => {
+        User.findOne({ username }, (err, user: IUser) => {
             if (err) return done(err);
             if (!user) {
-                return done(undefined, false, {message: `Username ${username} not found`});
+                return done(undefined, false, { message: `Username ${username} not found` });
             }
             user.comparePassword(password, (err: Error, isMatch: boolean) => {
                 if (err) return done(err);
                 if (isMatch) return done(undefined, user);
-                return done(undefined, false, {message: "Invalid email or password."});
+                return done(undefined, false, { message: "Invalid email or password." });
             });
         });
     }
 ));
+
+export let isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    res.status(403).end();
+}
