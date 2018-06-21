@@ -8,11 +8,11 @@ export interface IUserwork extends mongoose.Document {
     like: Boolean,
     rate: string,
     watched: Number,
-    _watched: [Number],
+    _watched: Number[],
 
 }
 export interface IUserworkModel extends mongoose.Model<IUserwork> {
-    setLike: setLikeFunction,
+    setLike: (userId: mongoose.Schema.Types.ObjectId, workId: mongoose.Schema.Types.ObjectId, like: boolean) => Promise<Boolean>
 }
 const userworkSchema = new mongoose.Schema({
     userId: {
@@ -38,14 +38,13 @@ const userworkSchema = new mongoose.Schema({
         }
     },
     like: { type: Boolean, default: false, },
-    rate: { type: String, default: "", },
+    rating: { type: String, default: "", },
     watched: { type: Number, default: 0, },
     _watched: { type: [Number], default: [], },
 });
 
-type setLikeFunction = (userId: mongoose.Schema.Types.ObjectId, workId: mongoose.Schema.Types.ObjectId, like: boolean) => Promise<Boolean>;
 
-const setLike: setLikeFunction = async function (userId, workId, like) {
+const setLike = async function (userId: mongoose.Schema.Types.ObjectId, workId: mongoose.Schema.Types.ObjectId, like: boolean): Promise<Boolean> {
     try {
         let userwork = await Userwork.findOne({ userId, workId });
         if (!userwork) {

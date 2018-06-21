@@ -1,4 +1,3 @@
-import createError from "http-errors";
 import express, { json, urlencoded } from "express";
 import { Request, Response, NextFunction } from 'express';
 import { join } from "path";
@@ -8,10 +7,10 @@ import session from "express-session";
 import logger from "morgan";
 import passport from 'passport';
 import mongoose from 'mongoose';
-import * as userController from './controller/user';
-import router from './router';
 import mongo from 'connect-mongo';
 import * as config from './config/userConfig';
+import userRouter from "./router/userRouter";
+import workRouter from "./router/workRouter";
 
 const MongoStore = mongo(session);
 var app = express();
@@ -45,8 +44,11 @@ app.all('/', (req: Request, res: Response, next: NextFunction) => {
   res.sendFile(join(__dirname, '../public/index.html'));
 });
 
-app.all('*', router);
+// router
+app.use('/user', userRouter);
+app.use('/work', workRouter);
 
+// redirect
 app.all('*', (req: Request, res: Response, next: NextFunction) => {
   res.redirect(`http://${req.hostname}:${process.env.PORT}`);
 });

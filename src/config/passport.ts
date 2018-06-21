@@ -2,7 +2,7 @@ import passport from 'passport';
 import passportLocal from 'passport-local';
 import User, { IUser } from '../model/userModel'
 import { Request, Response, NextFunction } from 'express';
-
+import { ErrorMessages, ResponseMessage } from '../util/errorMessage';
 const LocalStrategy = passportLocal.Strategy;
 
 passport.serializeUser<any, any>((user, done) => {
@@ -35,5 +35,5 @@ export let isAuthenticated = (req: Request, res: Response, next: NextFunction) =
     if (req.isAuthenticated()) {
         return next();
     }
-    res.status(403).end();
+    res.status(403).json(new ResponseMessage([ErrorMessages.unAuthenticated]));
 }
