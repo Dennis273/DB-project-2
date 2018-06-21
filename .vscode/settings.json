@@ -1,0 +1,11 @@
+{
+    "git.ignoreLimitWarning": true,
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/dist": true,
+        "**/coverge": true
+    },
+    "tslint.autoFixOnSave": true,
+    "tslint.exclude": "**/node_modules/**/*"
+}

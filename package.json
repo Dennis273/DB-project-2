@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "debug": "npm run build && DEBUG=test:* npm start",
+    "debug": "npm run build && DEBUG=test:* node ./bin/www",
     "debug-windows": "npm run build & set DEBUG=express:* & node ./bin/www",
     "build": "tsc"
   },
