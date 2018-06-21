@@ -1,12 +1,9 @@
 import mongoose from 'mongoose';
 
-export type WorkModel = mongoose.Document & {
+export interface IWork extends mongoose.Document {
     name: string,
     description: string,
-    metadata: {
-        key: string,
-        data: string,
-    },
+    metadata: { key: string, data: string, },
     tags: string[],
     comments: [{
         userId: mongoose.Schema.Types.ObjectId,
@@ -15,15 +12,12 @@ export type WorkModel = mongoose.Document & {
     }],
     episodes: number,
 }
+export interface IWorkModel extends mongoose.Model<IWork> {
 
+}
 const workSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
-    },
-    description: {
-        type: String,
-    },
+    name: { type: String, required: true, },
+    description: { type: String, },
     metadata: {
         type: [{
             key: String,
@@ -31,29 +25,14 @@ const workSchema = new mongoose.Schema({
         }],
         default: [],
     },
-    tags: [{
-        type: String,
-        default: [],
-    }],
+    tags: [{ type: String, default: [], }],
     comments: [{
-        userId: {
-            type: mongoose.Schema.Types.ObjectId,
-            required: true,
-        },
-        comment: {
-            type: String,
-            required: true,
-        },
-        time: {
-            type: Date,
-            default: Date.now,
-        },
+        userId: { type: mongoose.Schema.Types.ObjectId, required: true, },
+        comment: { type: String, required: true, },
+        time: { type: Date, default: Date.now, },
     }],
-    episodes: {
-        type: Number,
-        default: 1,
-    },
+    episodes: { type: Number, default: 1, },
 })
 
-const Work = mongoose.model('Work', workSchema);
+const Work: IWorkModel = mongoose.model<IWork, IWorkModel>('Work', workSchema);
 export default Work;

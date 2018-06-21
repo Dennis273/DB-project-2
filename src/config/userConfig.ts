@@ -10,6 +10,8 @@ export const SESSION_SECRET = process.env["SESSION_SECRET"];
 
 export const MONGODB_URI = process.env["MONGODB_URI"];
 
+export const PORT = process.env["PORT"];
+
 if (!SESSION_SECRET) {
     console.log('No client secret. Set SESSION_SECRET env variable');
     process.exit(1);

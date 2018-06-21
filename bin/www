@@ -3,6 +3,7 @@
 /**
  * Module dependencies.
  */
+var config = require('../dist/config/userConfig');
 var app = require('../dist/app.js').default;
 var debug = require('debug')('test:server');
 var http = require('http');
