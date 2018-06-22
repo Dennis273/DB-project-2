@@ -1,10 +1,9 @@
 import mongoose from 'mongoose';
 import User from './userModel';
 import Work from './workModel';
-const ObjectId = mongoose.Schema.Types.ObjectId
 export interface IUserwork extends mongoose.Document {
-    userId: mongoose.Schema.Types.ObjectId,
-    workId: mongoose.Schema.Types.ObjectId,
+    userId: string,
+    workId: string,
     like: Boolean,
     rate: string,
     watched: Number,
@@ -12,11 +11,11 @@ export interface IUserwork extends mongoose.Document {
 
 }
 export interface IUserworkModel extends mongoose.Model<IUserwork> {
-    setLike: (userId: mongoose.Schema.Types.ObjectId, workId: mongoose.Schema.Types.ObjectId, like: boolean) => Promise<Boolean>
+    setLike: (userId: string, workId: string, like: boolean) => Promise<Boolean>
 }
 const userworkSchema = new mongoose.Schema({
     userId: {
-        type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User', validate: {
+        type: String, validate: {
             isAsync: true,
             validator: function (value, cb) {
                 User.findById(value, (error, user) => {
@@ -27,7 +26,7 @@ const userworkSchema = new mongoose.Schema({
         }
     },
     workId: {
-        type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Work', validate: {
+        type: String, required: true, validate: {
             isAsync: true,
             validator: function (value, cb) {
                 Work.findById(value, (error, work) => {
@@ -44,7 +43,7 @@ const userworkSchema = new mongoose.Schema({
 });
 
 
-const setLike = async function (userId: mongoose.Schema.Types.ObjectId, workId: mongoose.Schema.Types.ObjectId, like: boolean): Promise<Boolean> {
+const setLike = async function (userId: string, workId: string, like: boolean): Promise<Boolean> {
     try {
         let userwork = await Userwork.findOne({ userId, workId });
         if (!userwork) {

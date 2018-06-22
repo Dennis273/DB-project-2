@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import Work from '../model/workModel';
 import { userInfo, endianness } from 'os';
 import Userwork from '../model/userworkModel';
-import { ResponseMessage, ErrorMessages } from '../util/errorMessage';
+import { ResponseMessage, ErrorMessages } from '../util/utilities';
 
 export let getAllWork = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -65,7 +65,8 @@ export let updateById = async (req: Request, res: Response, next: NextFunction) 
 export let deleteById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const deleted = await Work.findByIdAndRemove(req.params.workId);
-        res.status(200).json(new ResponseMessage());
+        if (!deleted) return res.status(200).json(new ResponseMessage([ErrorMessages.workNotExist]));
+        return res.status(200).json(new ResponseMessage());
     } catch (error) {
         console.log(error);
         return res.status(200).json(new ResponseMessage([ErrorMessages.unknownError]));
@@ -74,7 +75,7 @@ export let deleteById = async (req: Request, res: Response, next: NextFunction) 
 
 export let like = async (req: Request, res: Response) => {
     try {
-        const result = await Userwork.setLike(req.user._id, req.params.workId, true);
+        const result = await Userwork.setLike(req.user.id, req.params.workId, true);
         return res.status(200).json(new ResponseMessage());
     } catch (error) {
         console.log(error);
@@ -83,7 +84,7 @@ export let like = async (req: Request, res: Response) => {
 }
 export let unlike = async (req: Request, res: Response) => {
     try {
-        const result = await Userwork.setLike(req.user._id, req.params.workId, false);
+        const result = await Userwork.setLike(req.user.id, req.params.workId, false);
         return res.status(200).json(new ResponseMessage());
     } catch (error) {
         console.log(error);
@@ -93,10 +94,10 @@ export let unlike = async (req: Request, res: Response) => {
 export let rate = async (req: Request, res: Response, next: NextFunction) => {
     const rating: string = req.body.rating;
     try {
-        let userwork = await Userwork.findOne({ userId: req.user._id, workId: req.body.workId });
+        let userwork = await Userwork.findOne({ userId: req.user.id, workId: req.body.workId });
         if (!userwork) {
             userwork = new Userwork({
-                userId: req.user._id,
+                userId: req.user.id,
                 workId: req.body.workId,
                 rating,
             });

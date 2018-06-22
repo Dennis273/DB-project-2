@@ -3,7 +3,8 @@ import '../config/passport'
 import passport from 'passport';
 import User, { IUser } from "../model/userModel";
 import { IVerifyOptions } from "passport-local";
-import { ResponseMessage, ErrorMessages } from "../util/errorMessage";
+import { ResponseMessage, ErrorMessages } from "../util/utilities";
+import Userwork from "../model/userworkModel";
 
 export let login = (req: Request, res: Response, next: NextFunction) => {
     passport.authenticate('local', (err: Error, user: IUser, info: IVerifyOptions) => {
@@ -41,5 +42,58 @@ export let register = async (req: Request, res: Response, next: NextFunction) =>
             return res.status(200).json(new ResponseMessage());
         });
     } else return res.status(200).json(new ResponseMessage(errors));
-
+}
+export let getUserInfo = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        let user: IUser;
+        if (req.params.userId) {
+            user = await User.findById(req.params.userId);
+            if (!user) {
+                res.status(200).json(new ResponseMessage([ErrorMessages.userNotExist]));
+            } else {
+                return res.status(200).json(new ResponseMessage([], user));
+            }
+        } else {
+            user = await User.findById(req.user._id);
+            return res.status(200).json(new ResponseMessage([], user));
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(200).json(new ResponseMessage([ErrorMessages.unknownError]));
+    }
+}
+export let getUserLikes = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        let user;
+        if (req.params.userId) {
+            user = await User.findById(req.params.userId);
+            if (!user) {
+                return res.status(200).json(new ResponseMessage([ErrorMessages.userNotExist]));
+            }
+        } else {
+            user = req.user;
+        }
+        const likes = await Userwork.find({ userId: user.id, like: true });
+        return res.status(200).json(new ResponseMessage([], { likes }));
+    } catch (error) {
+        res.status(200).json(new ResponseMessage([ErrorMessages.unknownError]));
+    }
+}
+export let setUserFollow = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        await req.user.setFollow(req.params.userId, true);
+        return res.status(200).json(new ResponseMessage());
+    } catch (error) {
+        console.log(error);
+        return res.status(200).json(new ResponseMessage([ErrorMessages.unknownError]));
+    }
+}
+export let setUserUnfollow = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        await req.user.setFollow(req.params.userId, false);
+        return res.status(200).json(new ResponseMessage());
+    } catch (error) {
+        console.log(error);
+        return res.status(200).json(new ResponseMessage([ErrorMessages.unknownError]));
+    }
 }

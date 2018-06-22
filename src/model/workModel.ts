@@ -6,14 +6,13 @@ export interface IWork extends mongoose.Document {
     metadata: { key: string, data: string, },
     tags: string[],
     comments: [{
-        userId: mongoose.Schema.Types.ObjectId,
+        userId: string,
         comment: string,
         time: Date,
     }],
     episodes: number,
 }
 export interface IWorkModel extends mongoose.Model<IWork> {
-
 }
 const workSchema = new mongoose.Schema({
     name: { type: String, required: true, },
@@ -27,7 +26,7 @@ const workSchema = new mongoose.Schema({
     },
     tags: [{ type: String, default: [], }],
     comments: [{
-        userId: { type: mongoose.Schema.Types.ObjectId, required: true, },
+        userId: { type: String, required: true, },
         comment: { type: String, required: true, },
         time: { type: Date, default: Date.now, },
     }],

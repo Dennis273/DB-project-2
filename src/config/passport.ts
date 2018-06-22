@@ -2,7 +2,7 @@ import passport from 'passport';
 import passportLocal from 'passport-local';
 import User, { IUser } from '../model/userModel'
 import { Request, Response, NextFunction } from 'express';
-import { ErrorMessages, ResponseMessage } from '../util/errorMessage';
+import { ErrorMessages, ResponseMessage } from '../util/utilities';
 const LocalStrategy = passportLocal.Strategy;
 
 passport.serializeUser<any, any>((user, done) => {

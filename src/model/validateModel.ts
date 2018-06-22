@@ -1,7 +1,5 @@
-import { Request, Response } from 'express';
 import validator from 'validator';
-import { ErrorMessages } from '../util/errorMessage';
-import { check } from 'express-validator/check';
+import { ErrorMessages } from '../util/utilities';
 
 export type constraints = {
     valid: Function,
