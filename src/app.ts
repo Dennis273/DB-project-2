@@ -1,6 +1,5 @@
-import express, { json, urlencoded } from "express";
-import { Request, Response, NextFunction } from 'express';
-import { join } from "path";
+import express, { json, urlencoded, Request, Response, NextFunction } from "express";
+import path, { join } from "path";
 import bodyParser from 'body-parser';
 import cookieParser from "cookie-parser";
 import session from "express-session";
@@ -9,9 +8,7 @@ import passport from 'passport';
 import mongoose from 'mongoose';
 import mongo from 'connect-mongo';
 import * as config from './config/userConfig';
-import userRouter from "./router/userRouter";
-import workRouter from "./router/workRouter";
-
+import apiRouter from './router/apiRouter'
 const MongoStore = mongo(session);
 var app = express();
 mongoose.connect(config.MONGODB_URI);
@@ -37,7 +34,7 @@ app.use(json());
 app.use(bodyParser.json());
 app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(join(__dirname, 'static')));
+app.use(express.static(path.join(__dirname, '../public')));
 
 app.all('/', (req: Request, res: Response, next: NextFunction) => {
   // serve static index.html
@@ -45,8 +42,7 @@ app.all('/', (req: Request, res: Response, next: NextFunction) => {
 });
 
 // router
-app.use('/user', userRouter);
-app.use('/work', workRouter);
+app.use('api', apiRouter)
 
 // redirect
 app.all('*', (req: Request, res: Response, next: NextFunction) => {
