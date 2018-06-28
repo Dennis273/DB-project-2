@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import Work from '../model/workModel';
-import { userInfo, endianness } from 'os';
 import Userwork from '../model/userworkModel';
+import _ from 'lodash';
 import { ResponseMessage, ErrorMessages } from '../util/utilities';
 
 export let getAllWork = async (req: Request, res: Response, next: NextFunction) => {
@@ -107,6 +107,72 @@ export let rate = async (req: Request, res: Response, next: NextFunction) => {
         }
         return res.status(200).json(new ResponseMessage());
     } catch (error) {
+        return res.status(200).json(new ResponseMessage([ErrorMessages.unknownError]));
+    }
+}
+
+export let addComment = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        let comment = {
+            userId: req.params.userId,
+            content: req.body.content,
+            time: new Date(),
+        }
+        let work = await Work.findById(req.params.workId);
+        work.comments.push(comment);
+        await work.save();
+        return res.status(200).json(new ResponseMessage());
+    } catch (error) {
+        console.log(error);
+        return res.status(200).json(new ResponseMessage([ErrorMessages.unknownError]));
+    }
+}
+export let getComments = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        let work = await Work.findById(req.params.workId);
+        return res.status(200).json(new ResponseMessage([], work.comments));
+    } catch (error) {
+        console.log(error);
+        return res.status(200).json(new ResponseMessage([ErrorMessages.unknownError]));
+    }
+}
+export let getTags = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        let work = await Work.findById(req.params.workId);
+        return res.status(200).json(new ResponseMessage([], work.tags));
+    } catch (error) {
+        console.log(error);
+        return res.status(200).json(new ResponseMessage([ErrorMessages.unknownError]));
+    }
+}
+export let addTag = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const newTag = req.body.newTag || "";
+        let work = await Work.findById(req.params.workId);
+        if (newTag.length == 0 || work.tags.includes(newTag)) {
+            return res.status(200).json(new ResponseMessage([ErrorMessages.illegalOperation]));
+        }
+        work.tags.push(newTag);
+        work.save();
+        return res.status(200).json(new ResponseMessage([]));
+    } catch (error) {
+        console.log(error);
+        return res.status(200).json(new ResponseMessage([ErrorMessages.unknownError]));
+    }
+}
+export let removeTag = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const targetTag = req.body.targetTag || "";
+        let work = await Work.findById(req.params.workId);
+        if (targetTag.length == 0 || !work.tags.includes(targetTag)) {
+            return res.status(200).json(new ResponseMessage([ErrorMessages.illegalOperation]));
+        }
+        //
+        _.pull(work.tags, targetTag);
+        work.save();
+        return res.status(200).json(new ResponseMessage([]));
+    } catch (error) {
+        console.log(error);
         return res.status(200).json(new ResponseMessage([ErrorMessages.unknownError]));
     }
 }

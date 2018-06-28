@@ -52,11 +52,10 @@ const setFollow: setFollowFunction = async function (targetUserId: string, follo
             targetUser.follower.push(this.id);
             this.following.push(targetUserId);
         } else {
-            // _.remove(targetUser.follower, val => val == this.id);
-            // _.remove(this.following, val => val == targetUserId);
             targetUser.follower = targetUser.follower.filter(val => val != this.id);
             this.following = this.following.filter((val: string) => val != targetUserId);
-            console.log(this.following);
+            // _.pull(targetUser.follower, this.id);
+            // _.pull(this.following, targetUserId);
         }
         await Promise.all([
             this.save(),

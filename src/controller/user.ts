@@ -45,16 +45,12 @@ export let register = async (req: Request, res: Response, next: NextFunction) =>
 }
 export let getUserInfo = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        let user: IUser;
-        if (req.params.userId) {
-            user = await User.findById(req.params.userId);
-            if (!user) {
-                res.status(200).json(new ResponseMessage([ErrorMessages.userNotExist]));
-            } else {
-                return res.status(200).json(new ResponseMessage([], user));
-            }
+        let id = req.params.userId || req.user.id;
+        let user: IUser = await User.findById(id);
+        if (!user) {
+            return res.status(200).json(new ResponseMessage([ErrorMessages.userNotExist]));
         } else {
-            user = await User.findById(req.user._id);
+            // process user
             return res.status(200).json(new ResponseMessage([], user));
         }
     } catch (error) {
@@ -94,6 +90,15 @@ export let setUserUnfollow = async (req: Request, res: Response, next: NextFunct
         return res.status(200).json(new ResponseMessage());
     } catch (error) {
         console.log(error);
+        return res.status(200).json(new ResponseMessage([ErrorMessages.unknownError]));
+    }
+}
+export let sendMessage = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        await req.user.sendMessage(req.params.userId, req.body.content);
+        return res.status(200).json(new ResponseMessage());
+    } catch (err) {
+        console.log(err);
         return res.status(200).json(new ResponseMessage([ErrorMessages.unknownError]));
     }
 }

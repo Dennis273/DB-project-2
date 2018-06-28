@@ -12,7 +12,7 @@ router.delete('/:workId/delete', isAuthenticated, workController.deleteById);
 router.post('/:workId/like', isAuthenticated, workController.like);
 router.post('/:workId/unlike', isAuthenticated, workController.unlike);
 router.get('/:workId', workController.getWorkById);
-
-
+// router.post('/:workId/comment/add', isAuthenticated, undefined);
+// router.get('/:workId/comment', undefined);
 
 export default router;
