@@ -1,12 +1,14 @@
 import validator from 'validator';
 import { ErrorMessages } from '../util/utilities';
 
-export type constraints = {
+export interface IConstraint {
     valid: Function,
     args: any[],
     error: ErrorMessages
-}[];
-export let checkValid = (value: string, cons: constraints): ErrorMessages[] => {
+};
+export type checkValidFunction = (value: string, cons: IConstraint[]) => ErrorMessages[];
+export let checkValid: checkValidFunction = (value, cons) => {
+    if (value == undefined) return [];
     let errors: ErrorMessages[] = [];
     cons.forEach(c => {
         if (!c.valid.apply(this, [value].concat(c.args))) errors.push(c.error);
@@ -15,7 +17,7 @@ export let checkValid = (value: string, cons: constraints): ErrorMessages[] => {
 };
 
 // data constraints
-export const passwordContraints: constraints = [
+export const passwordContraints: IConstraint[] = [
     {
         valid: validator.isLength,
         args: [8, 20],
@@ -32,14 +34,14 @@ export const passwordContraints: constraints = [
         error: ErrorMessages.invalidPassword_IllegaSymbol,
     }
 ];
-export const usernameContraints: constraints = [
+export const usernameContraints: IConstraint[] = [
     {
         valid: validator.isLength,
         args: [8, 18],
         error: ErrorMessages.invalidUsername_Length,
     },
 ]
-export const emailContraints: constraints = [
+export const emailContraints: IConstraint[] = [
     {
         valid: validator.isEmail,
         args: [],

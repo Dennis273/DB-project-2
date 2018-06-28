@@ -1,33 +1,28 @@
 import * as userController from '../controller/user';
-import { Request, Response, NextFunction } from 'express';
 import express from 'express';
-import { checkValid, usernameContraints, passwordContraints, emailContraints } from '../model/validateModel';
-import { ErrorMessages, ResponseMessage } from '../util/utilities';
-import _ from 'lodash';
-const validUserData = (req: Request, res: Response, next: NextFunction) => {
-    try {
-        let errors = _.concat(
-            checkValid(req.body.username || '', usernameContraints),
-            checkValid(req.body.password || '', passwordContraints),
-            checkValid(req.body.email || '', emailContraints),
-        );
-        if (errors.length === 0) return next();
-        else res.status(200).json(new ResponseMessage(errors));
-    } catch (error) {
-        return res.status(200).json(new ResponseMessage([ErrorMessages.unknownError]));
-    }
-};
+import { usernameContraints, passwordContraints, emailContraints } from '../model/validateModel';
+import { isAuthenticated } from '../config/passport';
+import { check, validateData } from '../util/validator';
 
 const router = express.Router();
 
 router.get('/', userController.getUserInfo);
-router.post('/login', validUserData, userController.login);
-router.post('/register', validUserData, userController.register);
+router.post('/login', validateData([
+    check('username', usernameContraints),
+    check('email', emailContraints),
+    check('password', passwordContraints),
+]), userController.login);
+router.post('/register', validateData([
+    check('username', usernameContraints),
+    check('email', emailContraints),
+    check('password', passwordContraints),
+]), userController.register);
 router.all('/logout', userController.logout);
-router.get('/likes', userController.getUserLikes);
+router.get('/likes', isAuthenticated, userController.getUserLikes);
 router.get('/:userId', userController.getUserInfo);
 router.get('/:userId/likes', userController.getUserLikes);
-router.post('/:userId/follow', userController.setUserFollow);
-router.post('/:userId/unfollow', userController.setUserUnfollow);
-
+router.post('/:userId/follow', isAuthenticated, userController.setUserFollow);
+router.post('/:userId/unfollow', isAuthenticated, userController.setUserUnfollow);
+router.post('/:userId/message/send', isAuthenticated, userController.sendMessage);
+// router.get('/:userId/message', isAuthenticated, undefined);
 export default router;
