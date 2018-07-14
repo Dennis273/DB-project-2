@@ -42,7 +42,6 @@ const userworkSchema = new mongoose.Schema({
     _watched: { type: [Number], default: [], },
 });
 
-
 const setLike = async function (userId: string, workId: string, like: boolean): Promise<Boolean> {
     try {
         let userwork = await Userwork.findOne({ userId, workId });

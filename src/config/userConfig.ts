@@ -12,6 +12,8 @@ export const MONGODB_URI = process.env["MONGODB_URI"];
 
 export const PORT = process.env["PORT"];
 
+export const UPLOAD_PATH = process.env["UPLOADS_PATH"]
+
 if (!SESSION_SECRET) {
     console.log('No client secret. Set SESSION_SECRET env variable');
     process.exit(1);
@@ -19,4 +21,7 @@ if (!SESSION_SECRET) {
 if (!MONGODB_URI) {
     console.log('No mongodb connection string. Set MONGODB_URI env variable');
     process.exit(1);
+}
+if (!UPLOAD_PATH) {
+    console.log('No upload path, Set UPLOAD_PATH env variable');
 }

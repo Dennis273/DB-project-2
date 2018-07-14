@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 export interface IWork extends mongoose.Document {
     name: string,
     description: string,
-    metadata: { key: string, data: string, },
+    metadata: { key: string, value: string, }[],
     tags: string[],
     comments: [{
         userId: string,
@@ -20,7 +20,7 @@ const workSchema = new mongoose.Schema({
     metadata: {
         type: [{
             key: String,
-            data: String,
+            value: String,
         }],
         default: [],
     },

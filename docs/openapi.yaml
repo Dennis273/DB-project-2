@@ -50,7 +50,7 @@ paths:
                   error:
                     type: string
                     description: error massage
-  /user/registe:
+  /user/register:
     post:
       tags:
       - "user"
@@ -65,6 +65,14 @@ paths:
       responses:
         '200': 
           description: ok
+          content:
+          apllication/json:
+            schema:
+              type: object
+              properties:
+                success: boolean
+                description: isSuccess
+
         '400':
           description: some error
           content:
@@ -171,30 +179,8 @@ paths:
                         type: integer
         '400':
           $ref: '#/components/responses/errormassage'
-  /userworks:
-    get:
-      tags:
-        - 'userworks'
-      summary: get works associated with the user
-      parameters: 
-        - in: cookie
-          name: userid
-          schema:
-            type: string
-          required: true
-      responses:
-        '200':
-          description: ok
-          content:
-            apllication/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/briefwork'
-        '400':
-          $ref: '#/components/responses/errormassage'
-  /userworks/{workid}/changefavorite:
-    put:
+  /work/{workid}/like:
+    post:
       tags:
         - 'userworks'
       summary: update favorite
@@ -205,24 +191,30 @@ paths:
             type: string
           required: true
         - in: cookie
-          name: userid
-          schema:
+          name: sessionId
+          schema: 
             type: string
           required: true
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                isFavorite:
-                  type: boolean
       responses:
         '200':
-          description: ok
-        '400':
+          description: result
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties: 
+                    success:
+                      type: boolean
+                      description: is Success
+        '403':
+          description: not login
+            content:
+              application/json:
+                schema:
+                  type: boolean
+                  description: is Success
           $ref: '#/components/responses/errormassage'
-  /userworks/{workid}/changerank:
+  /work/{workid}/changerank:
     put:
       tags:
         - 'userworks'

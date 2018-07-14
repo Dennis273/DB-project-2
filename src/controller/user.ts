@@ -51,7 +51,7 @@ export let getUserInfo = async (req: Request, res: Response, next: NextFunction)
             return res.status(200).json(new ResponseMessage([ErrorMessages.userNotExist]));
         } else {
             // process user
-            return res.status(200).json(new ResponseMessage([], user));
+            return res.status(200).json(new ResponseMessage([], { user }));
         }
     } catch (error) {
         console.log(error);
