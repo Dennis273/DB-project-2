@@ -4,7 +4,7 @@ import workRouter from './workRouter';
 
 const router = express.Router();
 
-router.all('/user', userRouter);
-router.all('/work', workRouter);
+router.use('/user', userRouter);
+router.use('/work', workRouter);
 
 export default router;

@@ -10,6 +10,7 @@ router.get('/', workController.getAllWorks);
 router.post('/create', isAuthenticated, workController.createWork);
 router.put('/:workId/update', isAuthenticated, workController.updateById);
 router.delete('/:workId/delete', isAuthenticated, workController.deleteById);
+// 
 router.get('/:workId/cover');
 router.post('/:workId/cover', isAuthenticated, upload.single('cover'));
 router.post('/:workId/like', isAuthenticated, workController.like);
@@ -24,4 +25,6 @@ router.get('/:workId', workController.getWorkById);
 router.post('/:workId/comment/new', isAuthenticated, workController.addComment);
 router.get('/:workId/comment', workController.getComments);
 
+router.post('/:workId/watched', isAuthenticated, workController.setWatched);
+router.post('/:workId/rate', isAuthenticated, workController.setRate);
 export default router;

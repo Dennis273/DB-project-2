@@ -6,6 +6,7 @@ export interface IWork extends mongoose.Document {
     metadata: { key: string, value: string, }[],
     tags: string[],
     comments: [{
+        username: string,
         userId: string,
         content: string,
         time: Date,
@@ -26,6 +27,7 @@ const workSchema = new mongoose.Schema({
     },
     tags: [{ type: String, default: [], }],
     comments: [{
+        username: { type: String, required: true, },
         userId: { type: String, required: true, },
         content: { type: String, required: true, },
         time: { type: Date, default: Date.now, },

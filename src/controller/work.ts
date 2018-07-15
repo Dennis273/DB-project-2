@@ -52,7 +52,8 @@ export let updateById = async (req: Request, res: Response, next: NextFunction) 
             // targetWork.name = req.body.name || targetWork.name;
             // targetWork.description = req.body.description || targetWork.description;
             // await targetWork.save();
-            Work.findByIdAndUpdate(workId, newWork);
+            targetWork = newWork;
+            await targetWork.save();
         }
     } catch (error) {
         console.log(error);
@@ -92,6 +93,18 @@ export let unlike = async (req: Request, res: Response) => {
         return res.status(200).json(new ResponseMessage([ErrorMessages.unknownError]));
     }
 }
+export let getlike = async (req: Request, res: Response) => {
+    try {
+        const workId = req.params.workId;
+        const userId = req.user.id;
+        const target = await Userwork.findOne({ workId, userId });
+        const like = !(target == null || target.like == false);
+        return res.status(200).json(new ResponseMessage([], { like }));
+    } catch (error) {
+        console.log(error);
+        return res.status(200).json(new ResponseMessage([ErrorMessages.unknownError]));
+    }
+}
 export let rate = async (req: Request, res: Response, next: NextFunction) => {
     const rating: string = req.body.rating;
     try {
@@ -114,7 +127,9 @@ export let rate = async (req: Request, res: Response, next: NextFunction) => {
 export let addComment = async (req: Request, res: Response, next: NextFunction) => {
     try {
         let comment = {
-            userId: req.params.userId,
+            username: req.user.username,
+            workId: req.params.workId,
+            userId: req.user.id,
             content: req.body.content,
             time: new Date(),
         }
@@ -131,7 +146,7 @@ export let getComments = async (req: Request, res: Response, next: NextFunction)
     try {
         let work = await Work.findById(req.params.workId);
         return res.status(200).json(new ResponseMessage([], {
-            commets: work.comments,
+            comments: work.comments,
         }));
     } catch (error) {
         console.log(error);
@@ -224,7 +239,7 @@ export let removeMetadata = async (req: Request, res: Response, next: NextFuncti
         work.save();
     } catch (error) {
         console.log(error);
-        res.status(200).json(new ResponseMessage([ErrorMessages.unknownError]));
+        return res.status(200).json(new ResponseMessage([ErrorMessages.unknownError]));
     }
 }
 export let getMetaDatas = async (req: Request, res: Response, next: NextFunction) => {
@@ -232,14 +247,56 @@ export let getMetaDatas = async (req: Request, res: Response, next: NextFunction
     const targetKey = req.body.key;
     try {
         const work = await Work.findById(workId);
-        res.status(200).json(new ResponseMessage([], {
+        return res.status(200).json(new ResponseMessage([], {
             metadata: work.metadata,
         }));
     } catch (error) {
         console.log(error);
-        res.status(200).json(new ResponseMessage([ErrorMessages.unknownError]));
+        return res.status(200).json(new ResponseMessage([ErrorMessages.unknownError]));
     }
 }
 export let uploadCover = async (req: Request, res: Response, next: NextFunction) => {
     const workId = req.params.workId;
+    //
+}
+
+export let setWatched = async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.user.id;
+    const workId = req.params.workId;
+    const watched = req.body.watched;
+    try {
+        let userwork = await Userwork.findOne({ userId, workId });
+        if (!userwork) {
+            userwork = new Userwork({
+                userId,
+                workId,
+                watched,
+            });
+        }
+        await userwork.save();
+        return res.status(200).json(new ResponseMessage([]));
+    } catch (error) {
+        console.log(error);
+        return res.status(200).json(new ResponseMessage([ErrorMessages.unknownError]));
+    }
+}
+export let setRate = async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.user.id;
+    const workId = req.params.workId;
+    const rate = req.body.rate;
+    try {
+        let userwork = await Userwork.findOne({ userId, workId });
+        if (!userwork) {
+            userwork = new Userwork({
+                userId,
+                workId,
+                rate,
+            });
+        }
+        await userwork.save();
+        return res.status(200).json(new ResponseMessage([]));
+    } catch (error) {
+        console.log(error);
+        return res.status(200).json(new ResponseMessage([ErrorMessages.unknownError]));
+    }
 }

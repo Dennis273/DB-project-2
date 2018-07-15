@@ -42,7 +42,7 @@ app.all('/', (req: Request, res: Response, next: NextFunction) => {
 });
 
 // router
-app.use('api', apiRouter)
+app.use('/api', apiRouter)
 
 // redirect
 app.all('*', (req: Request, res: Response, next: NextFunction) => {
