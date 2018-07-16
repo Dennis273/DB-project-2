@@ -8,6 +8,7 @@ const router = express.Router();
 
 router.get('/', workController.getAllWorks);
 router.post('/create', isAuthenticated, workController.createWork);
+router.get('/search', workController.search);
 router.put('/:workId/update', isAuthenticated, workController.updateById);
 router.delete('/:workId/delete', isAuthenticated, workController.deleteById);
 // 

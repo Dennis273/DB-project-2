@@ -22,8 +22,7 @@ export let newArticle = async (req: Request, res: Response, next: NextFunction) 
 }
 export let getAllArticleId = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const articles = await Article.find({});
-        const articleIds = articles.map(article => article.id);
+        const articleIds = await Article.find({}).distinct('id');
         return res.status(200).json(new ResponseMessage([], { articleIds }));
     } catch (error) {
         console.log(error);
@@ -33,8 +32,7 @@ export let getAllArticleId = async (req: Request, res: Response, next: NextFunct
 export let getOwnArticleId = async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.user.userId;
     try {
-        const articles = await Article.find({ userId });
-        const articleIds = articles.map(article => article.id);
+        const articleIds = await Article.find({ userId }).distinct('id');
         return res.status(200).json(new ResponseMessage([], { articleIds }));
     } catch (error) {
         console.log(error);
@@ -55,7 +53,7 @@ export let deleteArticleById = async (req: Request, res: Response, next: NextFun
     const articleId = req.params.articleId;
     try {
         const article = await Article.findByIdAndRemove(articleId);
-        return res.status(200).json(new ResponseMessage([], { article }));
+        return res.status(200).json(new ResponseMessage([]));
     } catch (error) {
         console.log(error);
         return res.status(200).json(new ResponseMessage([ErrorMessages.unknownError]));

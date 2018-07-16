@@ -300,3 +300,15 @@ export let setRate = async (req: Request, res: Response, next: NextFunction) => 
         return res.status(200).json(new ResponseMessage([ErrorMessages.unknownError]));
     }
 }
+export let search = async (req: Request, res: Response, next: NextFunction) => {
+    const keyword = req.params.q;
+    try {
+        const workIds = await Work.find({
+            $text: { $search: "keyword" }
+        }).distinct('id');
+        return res.status(200).json(new ResponseMessage([], { workIds }))
+    } catch (error) {
+        console.log(error);
+        return res.status(200).json(new ResponseMessage([ErrorMessages.unknownError]));
+    }
+}
