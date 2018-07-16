@@ -45,9 +45,9 @@ app.all('/', (req: Request, res: Response, next: NextFunction) => {
 app.use('/api', apiRouter)
 
 // redirect
-app.all('*', (req: Request, res: Response, next: NextFunction) => {
-  res.redirect(`http://${req.hostname}:${process.env.PORT}`);
-});
+// app.all('*', (req: Request, res: Response, next: NextFunction) => {
+//   res.redirect(`http://${req.hostname}:${process.env.PORT}`);
+// });
 // error handler
 app.all('*', function (req, res) {
   res.status(404).end();
