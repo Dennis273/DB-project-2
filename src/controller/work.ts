@@ -3,7 +3,8 @@ import Work from '../model/workModel';
 import Userwork from '../model/userworkModel';
 import _ from 'lodash';
 import { ResponseMessage, ErrorMessages } from '../util/utilities';
-
+import fs from 'fs';
+import * as config from '../config/userConfig';
 export let getAllWorks = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const idList = await Work.find({}).distinct('_id');
@@ -257,9 +258,23 @@ export let getMetaDatas = async (req: Request, res: Response, next: NextFunction
 }
 export let uploadCover = async (req: Request, res: Response, next: NextFunction) => {
     const workId = req.params.workId;
-    //
+    const cover = req.file;
+    if (!req.file) return res.status(200).json(new ResponseMessage([ErrorMessages.illegalOperation]));
 }
-
+export let getCover = async (req: Request, res: Response, next: NextFunction) => {
+    const workId = req.params.workId;
+    const filePath = config.UPLOAD_PATH + '/work/cover/' + workId;
+    try {
+        const cover = await fs.exists(filePath, null);
+        if (cover) {
+            return res.status(200).sendFile(filePath);
+        }
+        return res.status(200).json(new ResponseMessage([ErrorMessages.unknownError]));
+    } catch (error) {
+        console.log(error);
+        return res.status(200).json(new ResponseMessage([ErrorMessages.unknownError]));
+    }
+}
 export let setWatched = async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.user.id;
     const workId = req.params.workId;

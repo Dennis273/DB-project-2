@@ -1,9 +1,22 @@
 import * as workController from '../controller/work';
 import { isAuthenticated } from '../config/passport';
 import multer from 'multer';
+import { Request, Response, NextFunction } from 'express';
 import express from 'express';
 import * as config from '../config/userConfig';
-const upload = multer({ dest: config.UPLOAD_PATH + '/work/image' })
+const upload = multer({
+    dest: config.UPLOAD_PATH + '/work/cover',
+    fileFilter: (req, file, cb) => {
+        const fileTypes = ['jpg', 'jpeg', 'png', 'bmp'];
+        if (fileTypes.includes(file.mimetype)) cb(null, true);
+        else cb(null, false);
+    },
+    storage: multer.diskStorage({
+        filename: (req: Request, file, cb) => {
+            cb(null, req.params.workId);
+        }
+    })
+});
 const router = express.Router();
 
 router.get('/', workController.getAllWorks);
@@ -12,8 +25,8 @@ router.get('/search', workController.search);
 router.put('/:workId/update', isAuthenticated, workController.updateById);
 router.delete('/:workId/delete', isAuthenticated, workController.deleteById);
 // 
-router.get('/:workId/cover');
-router.post('/:workId/cover', isAuthenticated, upload.single('cover'));
+router.get('/:workId/cover', workController.getCover);
+router.post('/:workId/cover', isAuthenticated, upload.single('cover'), workController.uploadCover);
 router.post('/:workId/like', isAuthenticated, workController.like);
 router.post('/:workId/unlike', isAuthenticated, workController.unlike);
 // metadatas
