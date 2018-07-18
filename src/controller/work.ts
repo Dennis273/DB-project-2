@@ -265,7 +265,7 @@ export let getCover = async (req: Request, res: Response, next: NextFunction) =>
     const workId = req.params.workId;
     const filePath = config.UPLOAD_PATH + '/work/cover/' + workId;
     try {
-        const cover = await fs.exists(filePath, null);
+        const cover = fs.existsSync(filePath);
         if (cover) {
             return res.status(200).sendFile(filePath);
         }
