@@ -3,10 +3,11 @@ import { Request, Response, NextFunction } from 'express';
 import { ResponseMessage, ErrorMessages } from '../util/utilities';
 export let newArticle = async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.user.id;
-    const username = req.user.name;
-    const content = req.body.article.content;
+    const username = req.user.username;
+    console.log(req.body);
+    const content = req.body.content;
     const title = req.body.title;
-    const time = Date.now;
+    const time = new Date();
     if (!title || !content) return res.status(200).json(new ResponseMessage([ErrorMessages.illegalOperation]));
 
     try {
@@ -22,8 +23,8 @@ export let newArticle = async (req: Request, res: Response, next: NextFunction) 
 }
 export let getAllArticleId = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const articleIds = await Article.find({}).distinct('id');
-        return res.status(200).json(new ResponseMessage([], { articleIds }));
+        const articles = await Article.find({});
+        return res.status(200).json(new ResponseMessage([], { articles }));
     } catch (error) {
         console.log(error);
         return res.status(200).json(new ResponseMessage([ErrorMessages.unknownError]));
