@@ -287,6 +287,8 @@ export let setWatched = async (req: Request, res: Response, next: NextFunction) 
                 workId,
                 watched,
             });
+        } else {
+            userwork.set('watched', watched);
         }
         await userwork.save();
         return res.status(200).json(new ResponseMessage([]));
@@ -307,6 +309,8 @@ export let setRate = async (req: Request, res: Response, next: NextFunction) => 
                 workId,
                 rate,
             });
+        } else {
+            userwork.set('rating', rate);
         }
         await userwork.save();
         return res.status(200).json(new ResponseMessage([]));
@@ -317,6 +321,7 @@ export let setRate = async (req: Request, res: Response, next: NextFunction) => 
 }
 export let search = async (req: Request, res: Response, next: NextFunction) => {
     const keyword = req.query.q;
+    console.log(keyword);
     try {
         const workIds = await Work.find({
             $text: { $search: "keyword" }
