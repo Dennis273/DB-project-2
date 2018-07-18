@@ -12,7 +12,7 @@ export const MONGODB_URI = process.env["MONGODB_URI"];
 
 export const PORT = process.env["PORT"];
 
-export const UPLOAD_PATH = process.env["UPLOADS_PATH"]
+export const UPLOAD_PATH = process.env["UPLOAD_PATH"]
 
 if (!SESSION_SECRET) {
     console.log('No client secret. Set SESSION_SECRET env variable');

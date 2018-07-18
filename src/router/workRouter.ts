@@ -5,16 +5,16 @@ import { Request, Response, NextFunction } from 'express';
 import express from 'express';
 import * as config from '../config/userConfig';
 const upload = multer({
-    dest: config.UPLOAD_PATH + '/work/cover',
     fileFilter: (req, file, cb) => {
-        const fileTypes = ['jpg', 'jpeg', 'png', 'bmp'];
+        const fileTypes = ['image/jpg', 'image/jpeg', 'image/png', 'image/bmp'];
         if (fileTypes.includes(file.mimetype)) cb(null, true);
         else cb(null, false);
     },
     storage: multer.diskStorage({
         filename: (req: Request, file, cb) => {
             cb(null, req.params.workId);
-        }
+        },
+        destination: config.UPLOAD_PATH + '/work/cover',
     })
 });
 const router = express.Router();
