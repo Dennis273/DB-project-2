@@ -50,7 +50,7 @@ app.use('/api', apiRouter)
 // });
 // error handler
 app.all('*', function (req, res) {
-  res.status(404).end();
+  res.sendFile(join(__dirname, '../public/index.html'));
 });
 
 export default app;

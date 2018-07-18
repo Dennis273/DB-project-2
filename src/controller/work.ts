@@ -53,7 +53,7 @@ export let updateById = async (req: Request, res: Response, next: NextFunction) 
             // targetWork.name = req.body.name || targetWork.name;
             // targetWork.description = req.body.description || targetWork.description;
             // await targetWork.save();
-            targetWork = newWork;
+            Object.assign(targetWork, newWork);
             await targetWork.save();
         }
     } catch (error) {
