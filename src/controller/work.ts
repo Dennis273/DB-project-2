@@ -316,7 +316,7 @@ export let setRate = async (req: Request, res: Response, next: NextFunction) => 
     }
 }
 export let search = async (req: Request, res: Response, next: NextFunction) => {
-    const keyword = req.params.q;
+    const keyword = req.query.q;
     try {
         const workIds = await Work.find({
             $text: { $search: "keyword" }
